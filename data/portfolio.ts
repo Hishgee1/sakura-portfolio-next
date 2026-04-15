@@ -77,24 +77,24 @@ export type PortfolioData = {
 export const DATA: PortfolioData = {
 
   name:      "Sakura",
-  role:      "",
+  role:      "Програм хөгжүүлэгч & Өгөгдлийн сангийн мэргэжилтэн",
   tagline:   "Би бол хөөрхнөө барьж дйилэхгүй Мөндөө. ",
   available: true,
 
   about: [
-    { label: "Role",               value: "Programmer & DB Admin"       },
-    { label: "Focus",              value: "Backend & Data Engineering"  },
-    { label: "Strengths",          value: "System Design, Optimization" },
-    { label: "Currently learning", value: "Cloud Architecture & DevOps" },
+    { label: "Мэргэжил",      value: "Програмист & DB Админ"     },
+    { label: "Чиглэл",        value: "Backend & Data Engineering" },
+    { label: "Давуу тал",     value: "Систем загвар, Оновчлол"    },
+    { label: "Суралцаж буй",  value: "Cloud Архитектур & DevOps"  },
   ],
 
   skills: [
-    { icon: "🗄️", name: "Database Design",   desc: "PostgreSQL, MySQL, MSSQL",    level: 90 },
-    { icon: "⚙️", name: "Backend Dev",        desc: "Python, Node.js, REST APIs",  level: 85 },
-    { icon: "🔍", name: "Query Optimization", desc: "Indexing, Execution Plans",   level: 88 },
-    { icon: "🐳", name: "DevOps",             desc: "Docker, Git, CI/CD",          level: 75 },
-    { icon: "☁️", name: "Cloud",              desc: "AWS RDS, S3, EC2",            level: 70 },
-    { icon: "🔒", name: "Security",           desc: "Auth, Backup & Recovery",     level: 80 },
+    { icon: "🗄️", name: "Өгөгдлийн сан",  desc: "PostgreSQL, MySQL, MSSQL",   level: 90 },
+    { icon: "⚙️", name: "Backend",        desc: "Python, Node.js, REST APIs", level: 85 },
+    { icon: "🔍", name: "Query оновчлол", desc: "Indexing, Execution Plans",  level: 88 },
+    { icon: "🐳", name: "DevOps",         desc: "Docker, Git, CI/CD",         level: 75 },
+    { icon: "☁️", name: "Cloud",          desc: "AWS RDS, S3, EC2",           level: 70 },
+    { icon: "🔒", name: "Аюулгүй байдал", desc: "Auth, Backup & Recovery",    level: 80 },
   ],
 
   projects: [
@@ -192,11 +192,11 @@ export const DATA: PortfolioData = {
 
   futureGoals: [
     {
-      title:    "University of Tokyo",
-      subtitle: "Tokyo, Japan",
-      desc:     "My biggest dream is to study Computer Science at the University of Tokyo — one of Asia's top universities. I want to deepen my knowledge in advanced database systems, distributed computing, and AI while experiencing Japan's cutting-edge tech culture.",
+      title:    "Токиогийн Их Сургууль",
+      subtitle: "Токио, Япон",
+      desc:     "Бидний хамгийн том зорилго бол Азийн шилдэг их сургуулиудын нэг — Токиогийн Их Сургуульд программ хангамжаар суралцах. Миний хөөрхөн Мөндөө магистраар элсэж, харин би бакалавраар элсэж, судалгааны ажил хийх, Японы технологийн салбарт туршлага хуримтлуулах хүсэлтэй.",
       image:    "/tokyo-university.jpg",
-      tags:     ["Computer Science", "Research", "Japan", "Graduate Studies"],
+      tags:     ["Программ хангамж","Магистр", "Бакалавр","Ажил"],
     },
   ],
 

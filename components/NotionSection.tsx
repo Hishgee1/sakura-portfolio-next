@@ -12,10 +12,10 @@ export default function NotionSection({ notionUrl, contact }: Props) {
           </svg>
         </div>
 
-        <p className="section-label">Notes</p>
-        <h2 className="section-title">My Notion Workspace ✿</h2>
+        <p className="section-label">Тэмдэглэл</p>
+        <h2 className="section-title">Миний Notion орчин ✿</h2>
         <p className="section-desc">
-          This is where I keep my notes, ideas, and learning journal. Feel free to explore!
+          Би эндээ тэмдэглэл, санаа, суралцахын тэмдэглэлээ хадгалдаг. Та нар ч үзэж болно!
         </p>
 
         <a
@@ -24,7 +24,7 @@ export default function NotionSection({ notionUrl, contact }: Props) {
           rel="noopener noreferrer"
           className="btn btn-primary notion-btn"
         >
-          Open in Notion ↗
+          Notion-д нээх ↗
         </a>
 
         <div className="notion-divider" />

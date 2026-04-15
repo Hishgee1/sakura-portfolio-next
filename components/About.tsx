@@ -29,17 +29,17 @@ export default function About({ about, skills, name, tagline }: Props) {
           </div>
           <div className="about-photo-badge glass">
             <span className="about-badge-dot" />
-            Available for work
+            Ажилд бэлэн
           </div>
         </div>
 
         {/* Bio */}
         <div className="about-text">
-          <p className="section-label">About me</p>
-          <h2 className="section-title">A bit about {name}</h2>
+          <p className="section-label">Миний тухай</p>
+          <h2 className="section-title">{name}-гийн тухай</h2>
           <p>{tagline}</p>
           <p>
-            Always learning, always building — let&apos;s create something together.
+            Байнга суралцаж, бүтээж байна — хамтдаа ямар нэг гоё зүйл бүтээе.
           </p>
 
           <div className="about-tags">
@@ -55,7 +55,7 @@ export default function About({ about, skills, name, tagline }: Props) {
 
       {/* ── Skills ── */}
       <div className="about-skills reveal">
-        <p className="section-label" style={{ marginBottom: "1.5rem" }}>Skills &amp; Tools</p>
+        <p className="section-label" style={{ marginBottom: "1.5rem" }}>Ур чадвар &amp; Хэрэгсэл</p>
         <div className="skills-grid">
           {skills.map(skill => (
             <div key={skill.name} className="skill-card glass">

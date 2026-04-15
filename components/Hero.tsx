@@ -19,14 +19,14 @@ export default function Hero({ name, role, tagline }: Props) {
       <div className="hero-inner">
         <p className="hero-greeting">Сайн уу ✿</p>
         <h1>
-          Hi, I&apos;m <span className="accent">{name}</span>
+          Намайг <span className="accent">{name}</span> гэдэг
         </h1>
         <p style={{ color: "var(--muted)", fontWeight: 500, marginBottom: "0.5rem" }}>{role}</p>
         <p className="hero-desc">{tagline}</p>
 
         <div className={`hero-cta${showBtn ? " hero-cta--visible" : ""}`}>
           <Link href="/about" className="btn btn-primary">
-            About хуудас үзэх →
+            Миний тухай үзэх →
           </Link>
         </div>
       </div>

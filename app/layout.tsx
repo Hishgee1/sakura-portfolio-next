@@ -4,6 +4,8 @@ import { DATA } from "@/data/portfolio";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
+import MusicPlayer from "@/components/MusicPlayer";
+import NameGate from "@/components/NameGate";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -48,6 +50,8 @@ export default function RootLayout({
           <main>{children}</main>
           <Footer name={DATA.name} />
           <ScrollReveal />
+          <MusicPlayer />
+          <NameGate />
         </div>
       </body>
     </html>

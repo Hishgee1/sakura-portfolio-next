@@ -6,11 +6,12 @@ import { usePathname } from "next/navigation";
 import { PortfolioData } from "@/data/portfolio";
 
 const LINKS = [
-  { href: "/about",    label: "About"    },
-  { href: "/gallery",  label: "Gallery"  },
-  { href: "/learn",    label: "Learn"    },
-  { href: "/future",   label: "Future"   },
-  { href: "/notes",    label: "Notes"    },
+  { href: "/about",    label: "Бидний тухай" },
+  { href: "/gallery",  label: "Аялал"     },
+  { href: "/learn",    label: "Сургалт"     },
+  { href: "/letters",  label: "Захиа"         },
+  { href: "/future",   label: "Зорилго"     },
+  { href: "/notes",    label: "Тэмдэглэл"   },
 ];
 
 export default function Nav({ name }: { name: PortfolioData["name"] }) {

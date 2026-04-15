@@ -7,13 +7,13 @@ type Props = { learn: LearnItem[]; kanji: KanjiCard[] };
 type Tab = "video" | "book" | "test" | "kanji";
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: "video", label: "YouTube",  icon: "📺" },
-  { id: "book",  label: "Ном",      icon: "📚" },
-  { id: "test",  label: "Шалгалт",  icon: "📝" },
-  { id: "kanji", label: "漢字",     icon: "✍️" },
+  { id: "video", label: "Бичлэг",  icon: "📺" },
+  { id: "book",  label: "Ном",     icon: "📚" },
+  { id: "test",  label: "Шалгалт", icon: "📝" },
+  { id: "kanji", label: "Ханз",    icon: "✍️" },
 ];
 
-const LEVELS = ["All", "N5", "N4", "N3", "N2", "N1"];
+const LEVELS = ["Бүгд", "N5", "N4", "N3", "N2", "N1"];
 
 const LEVEL_COLORS: Record<string, string> = {
   N5: "#A8C5A0", N4: "#B4A7D6", N3: "#E8A0BF",
@@ -22,7 +22,7 @@ const LEVEL_COLORS: Record<string, string> = {
 
 export default function Learn({ learn, kanji }: Props) {
   const [tab, setTab]               = useState<Tab>("video");
-  const [kanjiLevel, setKanjiLevel] = useState("All");
+  const [kanjiLevel, setKanjiLevel] = useState("Бүгд");
   const [flipped, setFlipped]       = useState<Set<number>>(new Set());
   const [pdfViewer, setPdfViewer]   = useState<{ title: string; src: string } | null>(null);
 
@@ -45,16 +45,16 @@ export default function Learn({ learn, kanji }: Props) {
   }
 
   const filtered = tab === "kanji"
-    ? kanji.filter(k => kanjiLevel === "All" || k.level === kanjiLevel)
+    ? kanji.filter(k => kanjiLevel === "Бүгд" || k.level === kanjiLevel)
     : learn.filter(item => item.type === tab);
 
   return (
     <section id="learn">
       <div className="reveal">
-        <p className="section-label">Learning</p>
-        <h2 className="section-title">Study resources ✍️</h2>
+        <p className="section-label">Сургалт</p>
+        <h2 className="section-title">Суралцах эх сурвалж ✍️</h2>
         <p className="section-desc">
-          Japanese &amp; English learning materials — videos, books, tests, and kanji practice.
+          Япон &amp; Англи хэлний материал — бичлэг, ном, шалгалт, ханз дасгал.
         </p>
       </div>
 
@@ -79,7 +79,7 @@ export default function Learn({ learn, kanji }: Props) {
             <button
               key={lv}
               className={`learn-level${kanjiLevel === lv ? " learn-level--active" : ""}`}
-              style={kanjiLevel === lv && lv !== "All"
+              style={kanjiLevel === lv && lv !== "Бүгд"
                 ? { background: LEVEL_COLORS[lv], borderColor: LEVEL_COLORS[lv] }
                 : undefined}
               onClick={() => { setKanjiLevel(lv); setFlipped(new Set()); }}
@@ -128,7 +128,7 @@ export default function Learn({ learn, kanji }: Props) {
                 <div className="learn-action">
                   {isBook && hasPdf  && <span className="learn-open">📖 Нээж унших →</span>}
                   {isBook && !hasPdf && <span className="learn-locked">📂 PDF нэмэгдээгүй</span>}
-                  {!isBook && hasLink && <span className="learn-open">→</span>}
+                  {!isBook && hasLink && <span className="learn-open">Үзэх →</span>}
                 </div>
               </Tag>
             );

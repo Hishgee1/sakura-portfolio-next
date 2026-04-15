@@ -69,10 +69,10 @@ export default function Gallery({ initialPhotos }: Props) {
   return (
     <section id="gallery">
       <div className="gallery-header reveal">
-        <p className="section-label">Travel Gallery</p>
-        <h2 className="section-title">My adventures ✈️</h2>
+        <p className="section-label">Аяллын цомог</p>
+        <h2 className="section-title">Миний аялал ✈️</h2>
         <p className="section-desc">
-          Moments captured along the way — places that left a mark on me.
+          Замдаа үлдээсэн мөчүүд — сэтгэлд үлдсэн газрууд.
         </p>
       </div>
 
@@ -128,7 +128,7 @@ export default function Gallery({ initialPhotos }: Props) {
 
         <button className="gallery-add reveal" onClick={() => inputRef.current?.click()}>
           <span className="gallery-add-icon">+</span>
-          <span className="gallery-add-label">Add photo</span>
+          <span className="gallery-add-label">Зураг нэмэх</span>
         </button>
       </div>
 
