@@ -66,7 +66,7 @@ export default function NameGate() {
           type="text"
           value={input}
           onChange={e => { setInput(e.target.value.toUpperCase()); setError(""); }}
-          placeholder="SAKURA / SASUKE"
+          placeholder=""
           className="namegate-input"
           maxLength={10}
           spellCheck={false}
