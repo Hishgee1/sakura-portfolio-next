@@ -19,19 +19,6 @@ const AUTHOR_COLORS: Record<Author, string> = {
 };
 const other = (a: Author): Author => (a === "Sasuke" ? "Sakura" : "Sasuke");
 
-const SEED: Letter[] = [
-  {
-    id: "s1",
-    from: "Sakura",
-    to:   "Sasuke",
-    message:
-      "Энэ долоо хоног нэлээд хүнд байлаа. Шалгалт, кодын алдаанууд, бас зүрх сэтгэлд үлдсэн өдрүүд. Гэхдээ чи байгаа цагт л бүх зүйл боломжтой гэдэгт би итгэдэг. Чамайгаа хайрлаж явна шүү. ✿",
-    date: "2026-04-16",
-    color: AUTHOR_COLORS.Sakura,
-  },
-];
-
-const STORAGE_KEY = "sakura-letters-v2";
 const USER_KEY    = "sakura-user";
 const READ_KEY    = "sakura-letters-read";
 const NOTIFY_KEY  = "sakura-letters-notified"; // session-ийн турш нэг л удаа notification
@@ -52,32 +39,42 @@ export default function Letters() {
   const [dodgeX, setDodgeX]         = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [dodgeLater, setDodgeLater] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  /* Load on mount */
+  /* Load on mount — cloud-аас татна */
   useEffect(() => {
     try {
       const savedUser = sessionStorage.getItem(USER_KEY);
       if (savedUser) setMe(titleCase(savedUser));
 
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const loaded: Letter[] = raw ? JSON.parse(raw) : SEED;
-      setLetters(loaded);
-      if (!raw) localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED));
-
       const rawRead = localStorage.getItem(READ_KEY);
       const read: Set<string> = new Set(rawRead ? JSON.parse(rawRead) : []);
       setReadIds(read);
 
-      /* Уншаагүй, надад хаягласан захиа байгаа эсэхийг шалгах */
-      if (savedUser) {
-        const currentMe = titleCase(savedUser);
-        const hasUnread = loaded.some(l => l.to === currentMe && !read.has(l.id));
-        const alreadyNotified = sessionStorage.getItem(NOTIFY_KEY) === "1";
-        if (hasUnread && !alreadyNotified) setNotifyOpen(true);
-      }
+      fetch("/api/letters", { cache: "no-store" })
+        .then(r => r.json())
+        .then((data: { letters: Letter[] }) => {
+          const loaded = data.letters ?? [];
+          setLetters(loaded);
+
+          if (savedUser) {
+            const currentMe = titleCase(savedUser);
+            const hasUnread = loaded.some(l => l.to === currentMe && !read.has(l.id));
+            const alreadyNotified = sessionStorage.getItem(NOTIFY_KEY) === "1";
+            if (hasUnread && !alreadyNotified) setNotifyOpen(true);
+          }
+        })
+        .catch(() => setLetters([]));
     } catch {
-      setLetters(SEED);
+      setLetters([]);
     }
   }, []);
+
+  const refetch = async () => {
+    try {
+      const r = await fetch("/api/letters", { cache: "no-store" });
+      const data = (await r.json()) as { letters: Letter[] };
+      setLetters(data.letters ?? []);
+    } catch {}
+  };
 
   const saveRead = (next: Set<string>) => {
     setReadIds(next);
@@ -96,27 +93,31 @@ export default function Letters() {
     setActive(l);
   };
 
-  const save = (next: Letter[]) => {
-    setLetters(next);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
-  };
-
-  const submit = () => {
+  const submit = async () => {
     if (!me || !message.trim()) return;
     if (editingId) {
-      save(letters.map(l => l.id === editingId ? { ...l, message: message.trim() } : l));
+      await fetch("/api/letters", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: editingId, message: message.trim() }),
+      });
       setEditingId(null);
     } else {
       const letter: Letter = {
-        id:      `${Date.now()}`,
+        id:      "",
         from:    me,
         to:      other(me),
         message: message.trim(),
         date:    new Date().toISOString().slice(0, 10),
         color:   AUTHOR_COLORS[me],
       };
-      save([letter, ...letters]);
+      await fetch("/api/letters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(letter),
+      });
     }
+    await refetch();
     setMessage("");
     setWriting(false);
   };
@@ -134,9 +135,10 @@ export default function Letters() {
     setEditingId(null);
   };
 
-  const remove = (id: string) => {
+  const remove = async (id: string) => {
     if (!confirm("Энэ захиаг устгах уу?")) return;
-    save(letters.filter(l => l.id !== id));
+    await fetch(`/api/letters?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    await refetch();
     setActive(null);
   };
 
