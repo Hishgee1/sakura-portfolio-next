@@ -14,34 +14,34 @@ const PETALS = Array.from({ length: 18 }, (_, i) => ({
   size:     8 + ((i * 5) % 10),
 }));
 
-/* Пирамид хэлбэртэй orb position генератор — N зурагт ажиллана */
+/* Пирамид layout — олон зурагт бие биетэйгээ давалдахгүй автоматаар өргөсөж байна */
 function makePositions(n: number) {
-  type Pos = { x: number; y: number; size: number; delay: number };
-  const out: Pos[] = [];
+  type Pos = { x: number; yPx: number; size: number; delay: number };
+  const MAX_PER_ROW = 5;
+  const ROW_HEIGHT  = 170; // px — мөр хоорондын зай
   const rows: number[] = [];
   let remaining = n;
   let r = 1;
   while (remaining > 0) {
-    const cnt = Math.min(r, remaining);
+    const cnt = Math.min(r, MAX_PER_ROW, remaining);
     rows.push(cnt);
     remaining -= cnt;
-    r++;
-    if (r > 6 && remaining > 0) { rows[rows.length - 1] += remaining; remaining = 0; }
+    if (r < MAX_PER_ROW) r++;
   }
-  const totalRows = rows.length;
-  const ySpan = 78;
+  const positions: Pos[] = [];
   let idx = 0;
   rows.forEach((cnt, ri) => {
-    const yBase = 12 + (ri * ySpan) / Math.max(1, totalRows - 1);
-    const size  = Math.max(95, 155 - ri * 12);
+    const yPx  = 70 + ri * ROW_HEIGHT;
+    const size = ri === 0 ? 150 : Math.max(115, 140 - ri * 4);
     for (let i = 0; i < cnt; i++) {
-      const xSpacing = 90 / (cnt + 1);
-      const x = 5 + xSpacing * (i + 1);
-      out.push({ x, y: yBase, size, delay: idx * 0.08 });
+      const xSpacing = 92 / (cnt + 1);
+      const x = 4 + xSpacing * (i + 1);
+      positions.push({ x, yPx, size, delay: idx * 0.06 });
       idx++;
     }
   });
-  return out;
+  const stageHeight = 70 + rows.length * ROW_HEIGHT + 40;
+  return { positions, stageHeight };
 }
 
 /* Япон бичиг footer */
@@ -73,7 +73,7 @@ export default function PhotoTree({ location, photos, onClose }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [active, onClose]);
 
-  const positions = makePositions(photos.length);
+  const { positions, stageHeight } = makePositions(photos.length);
   const [city, country] = location.split(",").map(s => s.trim());
 
   return (
@@ -121,7 +121,7 @@ export default function PhotoTree({ location, photos, onClose }: Props) {
       <button className="ptree-close-x" onClick={onClose} aria-label="Хаах">✕</button>
 
       {/* Orb stage */}
-      <div className="ptree-orb-stage">
+      <div className="ptree-orb-stage" style={{ height: stageHeight }}>
         {photos.map((photo, i) => {
           const pos = positions[i];
           if (!pos) return null;
@@ -132,7 +132,7 @@ export default function PhotoTree({ location, photos, onClose }: Props) {
               className={`ptree-orb${loaded ? " ptree-orb--in" : ""}`}
               style={{
                 left: `calc(${pos.x}% - ${pos.size / 2}px)`,
-                top:  `calc(${pos.y}% - ${pos.size / 2}px)`,
+                top:  `calc(${pos.yPx}px - ${pos.size / 2}px)`,
                 width:  pos.size,
                 height: pos.size,
                 animationDelay: `${pos.delay}s`,

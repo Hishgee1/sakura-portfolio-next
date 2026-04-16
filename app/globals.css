@@ -2549,10 +2549,17 @@ footer {
 .ptree-orb-stage {
   position: relative;
   width: 100%;
-  max-width: 900px;
-  height: clamp(460px, 70vh, 660px);
+  max-width: 1000px;
   margin: 0 auto;
   z-index: 3;
+}
+
+/* Scene container scrolls when lots of photos */
+.ptree-overlay { overflow-y: auto; overflow-x: hidden; }
+.ptree-overlay::-webkit-scrollbar { width: 8px; }
+.ptree-overlay::-webkit-scrollbar-thumb {
+  background: rgba(180,100,110,0.25);
+  border-radius: 10px;
 }
 
 .ptree-orb {
