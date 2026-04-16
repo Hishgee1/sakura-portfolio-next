@@ -10,7 +10,7 @@ export default function FutureGoals({ futureGoals }: Props) {
         <p className="section-label">Ирээдүйн зорилго</p>
         <h2 className="section-title">Бидний хүсэл мөрөөдөл</h2>
         <p className="section-desc">
-          Намайг өдөр бүр урагшаа хөтлөх мөрөөдөл, зорилтууд.
+          Биднийг өдөр бүр урагш хөтлөх мөрөөдөл, зорилтууд.
         </p>
       </div>
       <div className="future-grid">

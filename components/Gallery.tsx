@@ -77,50 +77,50 @@ export default function Gallery({ initialPhotos }: Props) {
       </div>
 
       <div className="gallery-grid">
-        {photos.map((photo, i) => {
-          const isBlob        = photo.src.startsWith("blob:");
-          const isPlaceholder = failed.has(i);
-          const siblings      = byLocation[photo.location]?.length ?? 0;
+        {Object.entries(byLocation).map(([location, list], i) => {
+          const cover = list[0];
+          const isBlob = cover.src.startsWith("blob:");
+          const key = `${location}-${i}`;
+          const coverIdx = photos.indexOf(cover);
+          const isPlaceholder = failed.has(coverIdx);
 
           return (
             <button
-              key={i}
+              key={key}
               className={`gallery-card ${SIZES[i % SIZES.length]} reveal`}
               style={isPlaceholder ? { background: GRADIENTS[i % GRADIENTS.length] } : undefined}
-              onClick={() => handleClick(photo)}
-              aria-label={`${photo.location} — ${photo.caption}`}
+              onClick={() => handleClick(cover)}
+              aria-label={`${location} — ${list.length} зураг`}
             >
               {!isPlaceholder && (
                 <div className="g-img">
                   <Image
-                    src={photo.src} alt={photo.caption} fill
+                    src={cover.src} alt={location} fill
                     style={{ objectFit: "cover" }}
                     sizes="(max-width:600px) 100vw,(max-width:900px) 50vw,33vw"
                     unoptimized={isBlob}
-                    onError={() => setFailed(prev => new Set(prev).add(i))}
+                    onError={() => setFailed(prev => new Set(prev).add(coverIdx))}
                   />
                 </div>
               )}
 
               {isPlaceholder && (
                 <div className="g-placeholder">
-                  <span className="g-placeholder-emoji">{getEmoji(photo.location)}</span>
-                  <span className="g-placeholder-loc">{photo.location}</span>
+                  <span className="g-placeholder-emoji">{getEmoji(location)}</span>
+                  <span className="g-placeholder-loc">{location}</span>
                 </div>
               )}
 
               {/* location pill */}
-              <div className="g-pill">📍 {photo.location}</div>
+              <div className="g-pill">📍 {location}</div>
 
-              {/* multi-photo badge */}
-              {siblings > 1 && (
-                <div className="g-count">{siblings} зураг</div>
-              )}
+              {/* photo count badge */}
+              <div className="g-count">{list.length} зураг</div>
 
               {/* hover overlay */}
               <div className={`g-overlay${isPlaceholder ? " g-overlay--show" : ""}`}>
-                <p className="g-caption">{photo.caption}</p>
-                <p className="g-date">{photo.date}</p>
+                <p className="g-caption">{location}</p>
+                <p className="g-date">{list.length} зураг</p>
               </div>
             </button>
           );
