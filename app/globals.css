@@ -2428,6 +2428,126 @@ footer {
 
 
 /* ============================================================
+   PHOTO TREE — Night mode (19:00 – 07:00 Mongolian time)
+   ============================================================ */
+.ptree-overlay--night {
+  background: linear-gradient(175deg, #0d0710 0%, #1a0e1e 20%, #1f1028 40%, #180c1d 60%, #0e0812 100%);
+}
+.ptree-overlay--night .ptree-bg-circles { display: none; }
+.ptree-overlay--night .ptree-petals { display: none; }
+.ptree-overlay--night .ptree-eyebrow { color: rgba(200,160,190,0.4); }
+.ptree-overlay--night .ptree-title {
+  color: rgba(230,195,215,0.88);
+  text-shadow: 0 0 40px rgba(180,100,150,0.25);
+}
+.ptree-overlay--night .ptree-meta-line {
+  background: linear-gradient(90deg, transparent, rgba(200,150,180,0.3), transparent);
+}
+.ptree-overlay--night .ptree-meta-text { color: rgba(200,160,190,0.45); }
+.ptree-overlay--night .ptree-close-x {
+  border: 1px solid rgba(200,150,180,0.3);
+  background: rgba(20,10,25,0.5);
+  color: rgba(230,195,215,0.85);
+}
+.ptree-overlay--night .ptree-close-x:hover {
+  background: rgba(200,150,180,0.2);
+  color: #fff;
+}
+.ptree-overlay--night .ptree-circle {
+  border: 2.5px solid rgba(200,160,190,0.3);
+  box-shadow:
+    0 0 30px rgba(150,80,120,0.35),
+    0 8px 32px rgba(0,0,0,0.5),
+    inset 0 0 30px rgba(100,50,80,0.2);
+}
+.ptree-overlay--night .ptree-ring {
+  border: 1.5px solid rgba(200,150,180,0.25);
+}
+.ptree-overlay--night .ptree-orb-label { color: rgba(200,160,190,0.55); }
+.ptree-overlay--night .ptree-footer-jp {
+  color: rgba(200,160,190,0.35);
+  letter-spacing: 0.15em;
+}
+.ptree-overlay--night .ptree-lb {
+  background: rgba(10,6,14,0.92);
+}
+.ptree-overlay--night .ptree-lb-circle {
+  border: 3px solid rgba(200,160,190,0.3);
+  box-shadow:
+    0 0 60px rgba(160,80,130,0.35),
+    0 0 120px rgba(120,50,100,0.2);
+}
+.ptree-overlay--night .ptree-lb-caption {
+  color: rgba(230,195,215,0.9);
+  text-shadow: 0 0 20px rgba(180,100,150,0.25);
+}
+.ptree-overlay--night .ptree-lb-loc { color: rgba(200,160,190,0.5); }
+.ptree-overlay--night .ptree-lb-close {
+  border-color: rgba(200,150,180,0.25);
+  color: rgba(200,160,190,0.6);
+}
+.ptree-overlay--night .ptree-lb-close:hover {
+  background: rgba(200,150,180,0.12);
+  color: rgba(230,195,215,0.95);
+}
+
+/* Stars */
+.ptree-stars { position: absolute; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+.ptree-star {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff, rgba(220,180,220,0.6));
+  animation: ptree-twinkle ease-in-out infinite alternate;
+}
+.ptree-star--bright {
+  background: radial-gradient(circle, #fff 30%, rgba(230,180,210,0.8) 60%, transparent);
+  box-shadow: 0 0 6px 1px rgba(230,180,210,0.55), 0 0 12px rgba(230,180,210,0.25);
+}
+@keyframes ptree-twinkle {
+  0%   { opacity: 0.2; transform: scale(0.8); }
+  100% { opacity: 1;   transform: scale(1.2); }
+}
+
+/* Nebula clouds */
+.ptree-nebula { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.ptree-neb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: ptree-neb-drift 22s ease-in-out infinite alternate;
+}
+.ptree-neb.n1 { width: 500px; height: 400px; top: -10%; left: -10%;
+  background: radial-gradient(ellipse, rgba(120,40,80,0.28), transparent 70%); animation-duration: 22s; }
+.ptree-neb.n2 { width: 400px; height: 450px; top: 20%; right: -15%;
+  background: radial-gradient(ellipse, rgba(80,30,100,0.22), transparent 70%); animation-duration: 26s; animation-delay: -5s; }
+.ptree-neb.n3 { width: 350px; height: 300px; bottom: 10%; left: 20%;
+  background: radial-gradient(ellipse, rgba(140,50,90,0.18), transparent 70%); animation-duration: 18s; animation-delay: -10s; }
+.ptree-neb.n4 { width: 300px; height: 350px; top: 40%; left: 40%;
+  background: radial-gradient(ellipse, rgba(100,40,120,0.15), transparent 70%); animation-duration: 24s; animation-delay: -8s; }
+
+@keyframes ptree-neb-drift {
+  0%   { transform: translate(0,0)    scale(1);    }
+  50%  { transform: translate(30px,-20px) scale(1.1); }
+  100% { transform: translate(-20px,15px) scale(0.95); }
+}
+
+/* Shooting star */
+.ptree-shoot {
+  position: absolute;
+  width: 120px;
+  height: 1.5px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(230,180,210,0.6), transparent);
+  border-radius: 2px;
+  z-index: 2;
+  pointer-events: none;
+  animation: ptree-shoot linear forwards;
+}
+@keyframes ptree-shoot {
+  0%   { opacity: 1; transform: translateX(0) scaleX(0.3) rotate(var(--a, 0deg)); }
+  100% { opacity: 0; transform: translateX(260px) scaleX(1) rotate(var(--a, 0deg)); }
+}
+
+/* ============================================================
    PHOTO TREE — Pink orb gallery
    ============================================================ */
 .ptree-overlay {

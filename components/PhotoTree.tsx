@@ -1,10 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 
 type Photo = { src: string; location: string; caption: string; date: string };
 type Props = { location: string; photos: Photo[]; onClose: () => void };
+
+/* Монголын цагаар шөнө мөн үү? (19:00–07:00) */
+function useIsNight() {
+  const [isNight, setIsNight] = useState(false);
+  useEffect(() => {
+    const check = () => {
+      const now = new Date();
+      const mnHour = (now.getUTCHours() + 8) % 24;
+      setIsNight(mnHour >= 19 || mnHour < 7);
+    };
+    check();
+    const iv = setInterval(check, 60_000);
+    return () => clearInterval(iv);
+  }, []);
+  return isNight;
+}
 
 /* Унаж буй сакура дэлбээ — тогтмол байрлал */
 const PETALS = Array.from({ length: 18 }, (_, i) => ({
@@ -13,6 +29,23 @@ const PETALS = Array.from({ length: 18 }, (_, i) => ({
   duration: 6 + ((i * 3) % 7),
   size:     8 + ((i * 5) % 10),
 }));
+
+/* Шөнийн одод */
+type Star = { x: number; y: number; size: number; opacity: number; twinkle: number; delay: number; bright: boolean };
+function makeStars(n: number): Star[] {
+  return Array.from({ length: n }, (_, i) => {
+    const bright = ((i * 17) % 100) < 8;
+    return {
+      x: (i * 53) % 100,
+      y: ((i * 29) % 100),
+      size: bright ? 2.5 + ((i * 7) % 15) / 10 : 0.8 + ((i * 11) % 15) / 10,
+      opacity: 0.35 + ((i * 13) % 65) / 100,
+      twinkle: 2 + ((i * 19) % 40) / 10,
+      delay: ((i * 23) % 50) / 10,
+      bright,
+    };
+  });
+}
 
 /* Пирамид layout — олон зурагт бие биетэйгээ давалдахгүй автоматаар өргөсөж байна */
 function makePositions(n: number) {
@@ -45,20 +78,24 @@ function makePositions(n: number) {
 }
 
 /* Япон бичиг footer */
-function jpFooter(loc: string): string {
+function jpFooter(loc: string, night: boolean): string {
   const l = loc.toLowerCase();
-  if (l.includes("tokyo"))    return "東京の思い出";
-  if (l.includes("osaka"))    return "大阪の思い出";
-  if (l.includes("dubai"))    return "ドバイの思い出";
-  if (l.includes("shanghai") || l.includes("shankhai")) return "上海の思い出";
-  if (l.includes("ulaanbaatar")) return "ウランバートルの思い出";
-  return "旅の思い出";
+  const suffix = night ? "の星空" : "の思い出";
+  if (l.includes("tokyo"))    return `東京${suffix}`;
+  if (l.includes("osaka"))    return `大阪${suffix}`;
+  if (l.includes("dubai"))    return `ドバイ${suffix}`;
+  if (l.includes("shanghai") || l.includes("shankhai")) return `上海${suffix}`;
+  if (l.includes("ulaanbaatar")) return `ウランバートル${suffix}`;
+  return `旅${suffix}`;
 }
 
 export default function PhotoTree({ location, photos, onClose }: Props) {
   const [active, setActive] = useState<Photo | null>(null);
   const [errors, setErrors] = useState<Set<number>>(new Set());
   const [loaded, setLoaded] = useState(false);
+  const isNight = useIsNight();
+  const stars = useMemo(() => makeStars(220), []);
+  const [shoot, setShoot] = useState<{ id: number; x: number; y: number; angle: number; dur: number } | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 120);
@@ -73,11 +110,70 @@ export default function PhotoTree({ location, photos, onClose }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [active, onClose]);
 
+  /* Одноор унах од — зөвхөн шөнө */
+  useEffect(() => {
+    if (!isNight) return;
+    const spawn = () => {
+      setShoot({
+        id: Date.now(),
+        x: 10 + Math.random() * 60,
+        y: 5 + Math.random() * 30,
+        angle: 15 + Math.random() * 30,
+        dur: 0.8 + Math.random() * 0.6,
+      });
+      setTimeout(() => setShoot(null), 1500);
+    };
+    const t = setTimeout(spawn, 2000);
+    const iv = setInterval(spawn, 5000 + Math.random() * 5000);
+    return () => { clearInterval(iv); clearTimeout(t); };
+  }, [isNight]);
+
   const { positions, stageHeight } = makePositions(photos.length);
   const [city, country] = location.split(",").map(s => s.trim());
 
   return (
-    <div className="ptree-overlay">
+    <div className={`ptree-overlay${isNight ? " ptree-overlay--night" : ""}`}>
+
+      {/* Night-only: nebula + stars + shooting star */}
+      {isNight && (
+        <>
+          <div className="ptree-nebula" aria-hidden="true">
+            <span className="ptree-neb n1" />
+            <span className="ptree-neb n2" />
+            <span className="ptree-neb n3" />
+            <span className="ptree-neb n4" />
+          </div>
+          <div className="ptree-stars" aria-hidden="true">
+            {stars.map((s, i) => (
+              <span
+                key={i}
+                className={s.bright ? "ptree-star ptree-star--bright" : "ptree-star"}
+                style={{
+                  left: `${s.x}%`,
+                  top:  `${s.y}%`,
+                  width:  s.size,
+                  height: s.size,
+                  opacity: s.opacity,
+                  animationDuration: `${s.twinkle}s`,
+                  animationDelay: `${s.delay}s`,
+                }}
+              />
+            ))}
+          </div>
+          {shoot && (
+            <span
+              key={shoot.id}
+              className="ptree-shoot"
+              style={{
+                left: `${shoot.x}%`,
+                top:  `${shoot.y}%`,
+                transform: `rotate(${shoot.angle}deg)`,
+                animationDuration: `${shoot.dur}s`,
+              }}
+            />
+          )}
+        </>
+      )}
 
       {/* Falling petals */}
       <div className="ptree-petals" aria-hidden="true">
@@ -165,7 +261,7 @@ export default function PhotoTree({ location, photos, onClose }: Props) {
 
       {/* Footer */}
       <div className={`ptree-footer${loaded ? " ptree-footer--in" : ""}`}>
-        <span className="ptree-footer-jp">{jpFooter(location)}</span>
+        <span className="ptree-footer-jp">{jpFooter(location, isNight)}</span>
       </div>
 
       {/* Lightbox */}
