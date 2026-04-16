@@ -22,11 +22,25 @@ const GRADIENTS = [
 const EMOJI_MAP: [string, string][] = [
   ["tokyo","🗼"],["japan","⛩️"],["osaka","🏮"],["korea","🇰🇷"],
   ["seoul","🏙️"],["thailand","🐘"],["singapore","🦁"],["mongolia","🏔️"],
-  ["ulaanbaatar","🇲🇳"],["travel","✈️"],
+  ["ulaanbaatar","🇲🇳"],["dubai","🕌"],["shanghai","🏯"],["uae","🕌"],["china","🏯"],
+  ["travel","✈️"],
 ];
 function getEmoji(loc: string) {
   const l = loc.toLowerCase();
   return EMOJI_MAP.find(([k]) => l.includes(k))?.[1] ?? "📸";
+}
+
+/* Тухайн газрын landmark зураг (нүүр карт-ийн cover) */
+const LANDMARK_MAP: [string, string][] = [
+  ["tokyo",       "/landmarks/tokyo.jpg"],
+  ["osaka",       "/landmarks/osaka.jpg"],
+  ["dubai",       "/landmarks/dubai.jpg"],
+  ["shanghai",    "/landmarks/shanghai.jpg"],
+  ["ulaanbaatar", "/landmarks/ulaanbaatar.jpg"],
+];
+function getLandmark(loc: string): string | null {
+  const l = loc.toLowerCase();
+  return LANDMARK_MAP.find(([k]) => l.includes(k))?.[1] ?? null;
 }
 
 type BranchView = { location: string; photos: Photo[] };
@@ -78,10 +92,12 @@ export default function Gallery({ initialPhotos }: Props) {
 
       <div className="gallery-grid">
         {Object.entries(byLocation).map(([location, list], i) => {
-          const cover = list[0];
-          const isBlob = cover.src.startsWith("blob:");
+          const firstPhoto = list[0];
+          const landmarkSrc = getLandmark(location);
+          const coverSrc = landmarkSrc ?? firstPhoto.src;
+          const isBlob = coverSrc.startsWith("blob:");
           const key = `${location}-${i}`;
-          const coverIdx = photos.indexOf(cover);
+          const coverIdx = photos.indexOf(firstPhoto);
           const isPlaceholder = failed.has(coverIdx);
 
           return (
@@ -89,13 +105,13 @@ export default function Gallery({ initialPhotos }: Props) {
               key={key}
               className={`gallery-card ${SIZES[i % SIZES.length]} reveal`}
               style={isPlaceholder ? { background: GRADIENTS[i % GRADIENTS.length] } : undefined}
-              onClick={() => handleClick(cover)}
+              onClick={() => handleClick(firstPhoto)}
               aria-label={`${location} — ${list.length} зураг`}
             >
               {!isPlaceholder && (
                 <div className="g-img">
                   <Image
-                    src={cover.src} alt={location} fill
+                    src={coverSrc} alt={location} fill
                     style={{ objectFit: "cover" }}
                     sizes="(max-width:600px) 100vw,(max-width:900px) 50vw,33vw"
                     unoptimized={isBlob}
