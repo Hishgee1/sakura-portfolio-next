@@ -11,9 +11,18 @@ function useIsNight() {
   const [isNight, setIsNight] = useState(false);
   useEffect(() => {
     const check = () => {
-      const now = new Date();
-      const mnHour = (now.getUTCHours() + 8) % 24;
-      setIsNight(mnHour >= 19 || mnHour < 7);
+      try {
+        const hourStr = new Intl.DateTimeFormat("en-US", {
+          timeZone: "Asia/Ulaanbaatar",
+          hour: "numeric",
+          hour12: false,
+        }).format(new Date());
+        const h = parseInt(hourStr, 10);
+        setIsNight(h >= 19 || h < 7);
+      } catch {
+        const h = (new Date().getUTCHours() + 8) % 24;
+        setIsNight(h >= 19 || h < 7);
+      }
     };
     check();
     const iv = setInterval(check, 60_000);
